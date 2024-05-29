@@ -159,32 +159,60 @@ export const useHome = defineStore("home", {
             }
         },
         async getProductNew() {
-            const res = await axios.get("http://localhost:8081/products/list-product-new");
-            this.productNews = res.data;
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product-new");
+                this.productNews = res.data;
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductFeature() {
-            const res = await axios.get("http://localhost:8081/products/list-product-featured");
-            this.productFeatures = res.data;
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product-featured");
+                this.productFeatures = res.data;
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductSeller() {
-            const res = await axios.get("http://localhost:8081/products/list-product-seller");
-            this.productSellers = res.data;
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product-seller");
+                this.productSellers = res.data;
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductArrival() {
-            const res = await axios.get("http://localhost:8081/products/list-product");
-            this.productArraivals = res.data;
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product");
+                this.productArraivals = res.data;
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductArea1() {
-            const res = await axios.get("http://localhost:8081/products/list-product");
-            this.productArea1 = res.data.slice(1, 4);
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product");
+                this.productArea1 = res.data.slice(1, 4);
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductArea2() {
-            const res = await axios.get("http://localhost:8081/products/list-product");
-            this.productArea2 = res.data.slice(5, 8);
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product");
+                this.productArea2 = res.data.slice(5, 8);
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getProductArea3() {
-            const res = await axios.get("http://localhost:8081/products/list-product");
-            this.productArea3 = res.data.slice(8, 11);
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product");
+                this.productArea3 = res.data.slice(8, 11);
+            } catch (error) {
+                console.log(error);
+            }
         },
     },
 });

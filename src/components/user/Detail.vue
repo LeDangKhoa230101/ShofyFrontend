@@ -25,13 +25,13 @@
                                 <router-link to="/">Home</router-link>
                             </li>
                             <li class="breadcrumb-item">
-                                <span>Mobile Tablets</span>
+                                <span>{{ detailStore.productDetail.brandName }}</span>
                             </li>
                             <li class="breadcrumb-item">
-                                <span>Samsung</span>
+                                <span>{{ detailStore.productDetail.cateName }}</span>
                             </li>
                             <li class="breadcrumb-item">
-                                <span>Galaxy Android Tablet</span>
+                                <span>{{ detailStore.productDetail.name }}</span>
                             </li>
                         </ol>
                     </nav>
@@ -45,27 +45,31 @@
                         <div class="nav-tab-thumb">
                             <button
                                 class="nav-link"
-                                v-for="(imageItem, index) in detailStore.product.image_detail"
+                                v-for="(imageItem, index) in detailStore.productDetail.images"
                                 :key="index"
                                 :class="{ active: detailStore.imageItemActive === index }"
                                 @click="detailStore.imageItemActive = index"
                             >
-                                <img :src="imageItem.image" alt="" />
+                                <img :src="imageItem.imageUrl" alt="" />
                             </button>
                         </div>
                         <div
                             class="product-detail-img"
-                            v-for="(imageItem, index) in detailStore.product.image_detail"
+                            v-for="(imageItem, index) in detailStore.productDetail.images"
                             :key="index"
                         >
-                            <img v-if="detailStore.imageItemActive === index" :src="imageItem.image" alt="img-detail" />
+                            <img
+                                v-if="detailStore.imageItemActive === index"
+                                :src="imageItem.imageUrl"
+                                alt="img-detail"
+                            />
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-6 col-md-12 col-12">
                     <div class="product-detail-content">
-                        <span class="category">Headphones</span>
-                        <h3 class="name">Gaming Headphone</h3>
+                        <span class="category">{{ detailStore.productDetail.cateName }}</span>
+                        <h3 class="name">{{ detailStore.productDetail.name }}</h3>
                         <div class="rate">
                             <span>in-stock</span>
                             <font-awesome-icon :icon="['fas', 'star']" />
@@ -107,19 +111,31 @@
                             }}</span>
                         </p>
                         <div class="price">
-                            <span>999.000đ</span>
-                            <span>156.000đ</span>
+                            <span>
+                                {{
+                                    detailStore.productDetail.priceOld
+                                        ? detailStore.productDetail.priceOld.toLocaleString()
+                                        : "N/A"
+                                }}đ
+                            </span>
+                            <span>
+                                {{
+                                    detailStore.productDetail.priceNew
+                                        ? detailStore.productDetail.priceNew.toLocaleString()
+                                        : "N/A"
+                                }}đ
+                            </span>
                         </div>
                         <div class="color">
                             <h4>Màu sắc</h4>
                             <div class="color-list">
                                 <button
-                                    v-for="(colorItem, index) in detailStore.product.colors"
+                                    v-for="(colorItem, index) in detailStore.productDetail.colors"
                                     :key="index"
                                     :class="{ active: detailStore.imageItemActive === index }"
                                     @click="detailStore.imageItemActive = index"
                                 >
-                                    <span :style="colorItem.rgb"></span>
+                                    <span :style="colorItem.color"></span>
                                 </button>
                             </div>
                         </div>
@@ -290,9 +306,14 @@
         <div class="container" style="padding: 95px 0 120px">
             <div class="row">
                 <h2 class="relate-heading">Những sảm phẩm tương tự</h2>
-                <div class="col-xl-3 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
-                <div class="col-xl-3 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
-                <div class="col-xl-3 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
+                <div
+                    v-for="item in detailStore.productRelateds"
+                    :key="item.id"
+                    class="col-xl-3 col-md-4 col-6"
+                    style="padding: 0 12px"
+                >
+                    <ProductItem :product="item" />
+                </div>
             </div>
         </div>
     </div>
@@ -306,6 +327,14 @@ export default {
     components: { ProductItem },
     setup() {
         const detailStore = useDetail();
+
+        const productDetail = localStorage.getItem("productDetail");
+        if (productDetail) {
+            detailStore.productDetail = JSON.parse(productDetail);
+        }
+
+        // list product related
+        detailStore.getRelated();
 
         return { detailStore };
     },

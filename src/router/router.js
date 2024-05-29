@@ -30,8 +30,9 @@ const routes = [
         },
     },
     {
-        path: "/san-pham",
+        path: "/san-pham/:id",
         component: Detail,
+        name: "productDetail",
         meta: {
             title: "Chi tiết sản phẩm",
         },

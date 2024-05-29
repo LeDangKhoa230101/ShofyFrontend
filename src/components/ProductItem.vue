@@ -1,5 +1,10 @@
 <template>
-    <a v-if="product" href="#" class="product-item">
+    <router-link
+        :to="{ name: 'productDetail', params: { id: product.id } }"
+        v-if="product"
+        @click="detailStore.handleDetail(product.id)"
+        class="product-item"
+    >
         <div class="product-image">
             <img :src="product.imageDefault" alt="" />
         </div>
@@ -66,18 +71,21 @@
                 <span>{{ product.priceNew.toLocaleString() }}đ</span>
             </div>
         </div>
-    </a>
+    </router-link>
 </template>
 
 <script>
 import { useCart } from "@/store/cart";
+import { useDetail } from "@/store/detail";
 export default {
     name: "product-item",
     props: ["product"],
     setup() {
         const cartStore = useCart();
 
-        return { cartStore };
+        const detailStore = useDetail();
+
+        return { cartStore, detailStore };
     },
 };
 </script>
@@ -91,6 +99,7 @@ export default {
     align-items: center;
     margin-bottom: 25px;
     border-radius: 8px;
+    cursor: pointer;
     background-color: var(--white);
     border: 1px solid var(--border-color-product);
     transition: all 0.3s ease-out 0s;
@@ -137,6 +146,7 @@ export default {
         font-weight: 550;
         margin: 7px 0;
         color: var(--common-black);
+        transition: all 0.3s ease-out 0s;
     }
 
     .rate {
@@ -164,6 +174,9 @@ export default {
             color: var(--primary-color);
         }
     }
+}
+.product-body > h5:hover {
+    color: var(--primary-color);
 }
 .product-action {
     position: absolute;

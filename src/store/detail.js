@@ -1,3 +1,4 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 
 export const useDetail = defineStore("detail", {
@@ -10,41 +11,9 @@ export const useDetail = defineStore("detail", {
 
         imageItemActive: 0,
 
-        product: {
-            id: 1,
-            name: "Gaming Headphone",
-            category: "Headphones",
-            price: 173.0,
-            colors: [
-                {
-                    colorId: 1,
-                    rgb: "background-color: rgb(3, 226, 221)",
-                },
-                {
-                    colorId: 2,
-                    rgb: "background-color: rgb(72, 72, 72)",
-                },
-                {
-                    colorId: 3,
-                    rgb: "background-color: rgb(241, 123, 61)",
-                },
-            ],
-            image_default: "https://i.ibb.co/n1YRvWJ/headphone-5.png",
-            image_detail: [
-                {
-                    imgId: 1,
-                    image: "https://i.ibb.co/n1YRvWJ/headphone-5.png",
-                },
-                {
-                    imgId: 2,
-                    image: "https://i.ibb.co/WpkH1vq/headphone-6.png",
-                },
-                {
-                    imgId: 3,
-                    image: "https://i.ibb.co/yRYbDCc/headphone-7.png",
-                },
-            ],
-        },
+        productDetail: {},
+
+        productRelateds: [],
     }),
     actions: {
         handleToggleDesc() {
@@ -61,6 +30,23 @@ export const useDetail = defineStore("detail", {
             setTimeout(() => {
                 this.showMessageAddCart = false;
             }, 1500);
+        },
+        async handleDetail(id) {
+            try {
+                const res = await axios.get(`http://localhost:8081/products/detail/${id}`);
+                this.productDetail = res.data;
+                localStorage.setItem("productDetail", JSON.stringify(this.productDetail));
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getRelated() {
+            try {
+                const res = await axios.get("http://localhost:8081/products/list-product-new");
+                this.productRelateds = res.data;
+            } catch (error) {
+                console.log(error);
+            }
         },
     },
 });
