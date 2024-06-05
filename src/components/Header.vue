@@ -39,8 +39,8 @@
                         </button>
                     </div>
                     <div class="col-xl-6 col-md-6 col-6">
-                        <form class="form-search">
-                            <input type="text" placeholder="Tìm kiếm sản phẩm..." />
+                        <form @submit.prevent="searchSubmit" class="form-search">
+                            <input type="text" v-model="searchTitle" placeholder="Tìm kiếm sản phẩm..." />
                             <button type="submit">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -180,8 +180,10 @@
 <script>
 import { useHome } from "@/store/home";
 import { useAccount } from "@/store/account";
+import { ref } from "vue";
 export default {
     name: "header-wrapper",
+    props: ["searchMethod"],
     mounted() {
         // Đặt mục đầu tiên là active mặc định khi component được mounted
         this.setActive(0);
@@ -192,7 +194,7 @@ export default {
             this.setActive(0);
         });
     },
-    setup() {
+    setup(props) {
         const homeStore = useHome();
         const accountStore = useAccount();
 
@@ -209,7 +211,14 @@ export default {
         // get category
         homeStore.getCategorys();
 
-        return { homeStore, accountStore, setActive, resetActive };
+        const searchTitle = ref("");
+
+        const searchSubmit = () => {
+            props.searchMethod(searchTitle.value);
+            searchTitle.value = "";
+        };
+
+        return { homeStore, accountStore, setActive, resetActive, searchTitle, searchSubmit };
     },
 };
 </script>

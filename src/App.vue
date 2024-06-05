@@ -1,5 +1,8 @@
 <template>
-    <Header v-if="!isLoginPage && !isRegisterPage && accountStore.isROLE === 'ROLE_USER'" />
+    <Header
+        :searchMethod="searchMethod"
+        v-if="!isLoginPage && !isRegisterPage && accountStore.isROLE === 'ROLE_USER'"
+    />
     <div id="user" v-if="accountStore.isROLE === 'ROLE_USER'">
         <router-view />
     </div>
@@ -15,7 +18,9 @@
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 import { useAccount } from "@/store/account";
+import { useSearch } from "@/store/search";
 import Sidebar from "./components/admin/Sidebar.vue";
+import { useRouter } from "vue-router";
 export default {
     name: "App",
     components: { Header, Footer, Sidebar },
@@ -29,8 +34,16 @@ export default {
     },
     setup() {
         const accountStore = useAccount();
+        const searchStore = useSearch();
 
-        return { accountStore };
+        const router = useRouter();
+
+        const searchMethod = (name) => {
+            searchStore.handleSearch(name);
+            router.push({ name: "Search", params: { name: name } });
+        };
+
+        return { accountStore, searchMethod };
     },
 };
 </script>

@@ -90,8 +90,9 @@ const routes = [
         name: "shopPaginate",
     },
     {
-        path: "/tim-kiem",
+        path: "/tim-kiem/:name",
         component: SearchPage,
+        name: "Search",
         meta: {
             title: "Tìm kiếm",
         },

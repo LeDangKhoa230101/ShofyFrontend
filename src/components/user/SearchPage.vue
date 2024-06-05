@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-12">
                     <div class="search-filter">
-                        <span>Hiển thị 37 kết quả</span>
+                        <span>Hiển thị {{ searchStore.productSearch.length }} kết quả</span>
                         <div class="filter-select">
                             <select>
                                 <option selected>Phân loại mặc định</option>
@@ -27,10 +27,14 @@
                 </div>
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
-                        <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
-                        <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
-                        <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px"><ProductItem /></div>
+                        <div
+                            class="col-xl-4 col-md-4 col-6"
+                            style="padding: 0 12px"
+                            v-for="item in searchStore.productSearch"
+                            :key="item.id"
+                        >
+                            <ProductItem :product="item" />
+                        </div>
                         <div class="col-12">
                             <p style="font-size: 1.6rem; text-align: center; color: #55585b; margin-top: 15px">
                                 Kết thúc sản phẩm
@@ -45,9 +49,15 @@
 
 <script>
 import ProductItem from "@/components/ProductItem.vue";
+import { useSearch } from "@/store/search";
 export default {
     name: "search-page",
     components: { ProductItem },
+    setup() {
+        const searchStore = useSearch();
+
+        return { searchStore };
+    },
 };
 </script>
 
