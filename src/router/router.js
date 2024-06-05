@@ -66,11 +66,28 @@ const routes = [
         },
     },
     {
+        path: "/cua-hang/:name",
+        component: Shop,
+        name: "shop",
+        meta: {
+            title: "Cửa hàng",
+        },
+        props: (route) => ({ category: route.params.name }),
+    },
+    {
         path: "/cua-hang",
         component: Shop,
         meta: {
             title: "Cửa hàng",
         },
+    },
+    {
+        path: "/cua-hang/page/:page",
+        component: Shop,
+        meta: {
+            title: "Cửa hàng",
+        },
+        name: "shopPaginate",
     },
     {
         path: "/tim-kiem",

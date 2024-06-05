@@ -4,6 +4,10 @@ export const useShop = defineStore("shop", {
     state: () => ({
         showList4: true,
         showList12: false,
+
+        activeCategoryIndex: 0,
+
+        activePageItemIndex: 0,
     }),
     actions: {
         handleShowList4() {

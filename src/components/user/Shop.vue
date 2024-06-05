@@ -20,35 +20,21 @@
                         <div class="side-bar-item">
                             <h3>Thể loại</h3>
                             <ul class="list-category">
-                                <li class="active">
-                                    <a href="#">
-                                        Headphones
-                                        <span>3</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Headphones
-                                        <span>3</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Headphones
-                                        <span>3</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Headphones
-                                        <span>3</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Headphones
-                                        <span>3</span>
-                                    </a>
+                                <li
+                                    v-for="(item, index) in homestore.categorys"
+                                    :key="item.cateId"
+                                    :class="
+                                        shopStore.activeCategoryIndex === index && isShopCategoryPage ? 'active' : ''
+                                    "
+                                    @click="shopStore.activeCategoryIndex = index"
+                                >
+                                    <router-link
+                                        :to="{ name: 'shop', params: { name: item.cateName } }"
+                                        @click="getProductByCate(item.cateName)"
+                                    >
+                                        {{ item.cateName }}
+                                        <span>{{ item.productCount }}</span>
+                                    </router-link>
                                 </li>
                             </ul>
                         </div>
@@ -166,7 +152,9 @@
                         </div>
                         <div class="side-bar-item">
                             <h3>Đặt lại bộ lọc</h3>
-                            <button class="reset-filter-btn">Đặt lại bộ lọc</button>
+                            <router-link to="/cua-hang" @click="handlePagenate(1)" class="reset-filter-btn"
+                                >Đặt lại bộ lọc</router-link
+                            >
                         </div>
                     </div>
                 </div>
@@ -254,16 +242,18 @@
                                                 ></path>
                                             </svg>
                                         </button>
-                                        <span class="show-result-text"> Hiển thị 1–9 trên 37 kết quả </span>
+                                        <span class="show-result-text">
+                                            Hiển thị {{ products.length }} trên {{ totalProducts }} kết quả
+                                        </span>
                                     </div>
                                 </div>
                                 <!-- Select -filter -->
                                 <div class="col-xl-6 col-md-6 col-6">
                                     <div class="filter-select">
-                                        <select>
-                                            <option selected>Phân loại mặc định</option>
-                                            <option value="1">Thấp đến cao</option>
-                                            <option value="2">Cao đến thấp</option>
+                                        <select @change="handleSelectFilter">
+                                            <option value="default" selected>Phân loại mặc định</option>
+                                            <option value="1">Cao đến thấp</option>
+                                            <option value="2">Thấp đến cao</option>
                                             <option value="3">Đang giảm giá</option>
                                         </select>
                                     </div>
@@ -272,30 +262,35 @@
                         </div>
                         <div class="col-12" v-if="shopStore.showList4">
                             <div class="row">
-                                <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px">
-                                    <ProductItem />
-                                </div>
-                                <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px">
-                                    <ProductItem />
-                                </div>
-                                <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px">
-                                    <ProductItem />
-                                </div>
-                                <div class="col-xl-4 col-md-4 col-6" style="padding: 0 12px">
-                                    <ProductItem />
+                                <div
+                                    v-for="item in products"
+                                    :key="item.id"
+                                    class="col-xl-4 col-md-4 col-6"
+                                    style="padding: 0 12px"
+                                >
+                                    <ProductItem :product="item" />
                                 </div>
                             </div>
                         </div>
                         <div class="col-12" v-if="shopStore.showList12">
                             <div class="row">
-                                <div class="col-12">
+                                <div v-for="product in products" :key="product.id" class="col-12">
                                     <div class="product-item">
-                                        <a href="#" class="image-link">
-                                            <img src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
+                                        <router-link
+                                            :to="{ name: 'productDetail', params: { id: product.id } }"
+                                            @click="detailStore.handleDetail(product.id)"
+                                            class="image-link"
+                                        >
+                                            <img :src="product.imageDefault" alt="product-image" />
+                                        </router-link>
                                         <div class="product-item-content">
-                                            <p class="category">Tai nghe</p>
-                                            <a href="#" class="name">Tai nghe không dây.</a>
+                                            <p class="category">{{ product.cateName }}</p>
+                                            <router-link
+                                                :to="{ name: 'productDetail', params: { id: product.id } }"
+                                                @click="detailStore.handleDetail(product.id)"
+                                                class="name"
+                                                >{{ product.name }}</router-link
+                                            >
                                             <div class="rate">
                                                 <font-awesome-icon :icon="['fas', 'star']" />
                                                 <font-awesome-icon :icon="['fas', 'star']" />
@@ -304,89 +299,8 @@
                                                 <font-awesome-icon :icon="['fas', 'star']" />
                                             </div>
                                             <div class="price">
-                                                <span>1.238.000đ</span>
-                                                <span>9.999.000đ</span>
-                                            </div>
-                                            <p class="description">
-                                                Tai nghe Jabra Evolve2 75 USB-A MS Teams Stereo Tai nghe Jabra Evolve2
-                                                75 USB-A MS Teams ha
-                                            </p>
-                                            <a href="#" class="next-cart">Thêm vào giỏ hàng</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="product-item">
-                                        <a href="#" class="image-link">
-                                            <img src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
-                                        <div class="product-item-content">
-                                            <p class="category">Tai nghe</p>
-                                            <a href="#" class="name">Tai nghe không dây.</a>
-                                            <div class="rate">
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                            </div>
-                                            <div class="price">
-                                                <span>1.238.000đ</span>
-                                                <span>9.999.000đ</span>
-                                            </div>
-                                            <p class="description">
-                                                Tai nghe Jabra Evolve2 75 USB-A MS Teams Stereo Tai nghe Jabra Evolve2
-                                                75 USB-A MS Teams ha
-                                            </p>
-                                            <a href="#" class="next-cart">Thêm vào giỏ hàng</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="product-item">
-                                        <a href="#" class="image-link">
-                                            <img src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
-                                        <div class="product-item-content">
-                                            <p class="category">Tai nghe</p>
-                                            <a href="#" class="name">Tai nghe không dây.</a>
-                                            <div class="rate">
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                            </div>
-                                            <div class="price">
-                                                <span>1.238.000đ</span>
-                                                <span>9.999.000đ</span>
-                                            </div>
-                                            <p class="description">
-                                                Tai nghe Jabra Evolve2 75 USB-A MS Teams Stereo Tai nghe Jabra Evolve2
-                                                75 USB-A MS Teams ha
-                                            </p>
-                                            <a href="#" class="next-cart">Thêm vào giỏ hàng</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="product-item">
-                                        <a href="#" class="image-link">
-                                            <img src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
-                                        <div class="product-item-content">
-                                            <p class="category">Tai nghe</p>
-                                            <a href="#" class="name">Tai nghe không dây.</a>
-                                            <div class="rate">
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                                <font-awesome-icon :icon="['fas', 'star']" />
-                                            </div>
-                                            <div class="price">
-                                                <span>1.238.000đ</span>
-                                                <span>9.999.000đ</span>
+                                                <span>{{ product.priceOld.toLocaleString() }}đ</span>
+                                                <span>{{ product.priceNew.toLocaleString() }}đ</span>
                                             </div>
                                             <p class="description">
                                                 Tai nghe Jabra Evolve2 75 USB-A MS Teams Stereo Tai nghe Jabra Evolve2
@@ -400,29 +314,40 @@
                         </div>
                     </div>
                     <!-- Paginate -->
-                    <div class="row">
+                    <div class="row" v-if="!isShopCategoryPage">
                         <div class="col-12">
                             <div class="paginate-container">
                                 <nav>
                                     <ul class="pagination-list">
                                         <li class="page-item">
-                                            <a class="page-link disable" href="#">
+                                            <router-link
+                                                class="page-link"
+                                                :to="{ name: 'shopPaginate', params: { page: currentPage - 1 } }"
+                                                :class="{ disable: currentPage === 1 }"
+                                                @click="prevPage"
+                                            >
                                                 <font-awesome-icon :icon="['fas', 'arrow-left']" />
-                                            </a>
+                                            </router-link>
+                                        </li>
+                                        <li class="page-item" v-for="item in pageItems" :key="item">
+                                            <router-link
+                                                :to="{ name: 'shopPaginate', params: { page: item } }"
+                                                class="page-link"
+                                                :class="{ active: currentPage === item }"
+                                                @click="handlePagenate(item)"
+                                            >
+                                                {{ item }}
+                                            </router-link>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link active" href="#">1</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">
+                                            <router-link
+                                                class="page-link"
+                                                :to="{ name: 'shopPaginate', params: { page: currentPage + 1 } }"
+                                                :class="{ disable: currentPage === totalPages }"
+                                                @click="nextPage"
+                                            >
                                                 <font-awesome-icon :icon="['fas', 'arrow-right']" />
-                                            </a>
+                                            </router-link>
                                         </li>
                                     </ul>
                                 </nav>
@@ -438,13 +363,130 @@
 <script>
 import ProductItem from "@/components/ProductItem.vue";
 import { useShop } from "@/store/shop";
+import { useDetail } from "@/store/detail";
+import { useHome } from "@/store/home";
+import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
+import axios from "axios";
 export default {
     name: "shop-wrapper",
     components: { ProductItem },
+    computed: {
+        isShopCategoryPage() {
+            return this.$route.name === "shop";
+        },
+    },
     setup() {
         const shopStore = useShop();
+        const detailStore = useDetail();
+        const homestore = useHome();
 
-        return { shopStore };
+        // get all category
+        homestore.getCategorys();
+
+        // filter select
+        const handleSelectChange = (event) => {
+            shopStore.handleSelectChange(event);
+        };
+
+        //// load products and paginate
+        const route = useRoute();
+        const currentPage = ref(parseInt(route.params.page) || 1);
+        const products = ref([]);
+        const totalProducts = ref(0);
+        const pageItems = ref([]);
+        const totalPages = ref(0);
+
+        const paginateProducts = async (page) => {
+            try {
+                const res = await axios.get(`http://localhost:8081/products/pagination/${page}?size=6`);
+                products.value = res.data.productDtos;
+                totalProducts.value = res.data.totalProducts;
+                totalPages.value = Math.ceil(totalProducts.value / 6);
+                generatePageItems();
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const generatePageItems = () => {
+            pageItems.value = Array.from({ length: totalPages.value }, (_, i) => i + 1);
+        };
+
+        const handlePagenate = (page) => {
+            currentPage.value = page;
+            paginateProducts(page);
+        };
+
+        const prevPage = () => {
+            if (currentPage.value > 1) {
+                handlePagenate(currentPage.value - 1);
+            }
+        };
+
+        const nextPage = () => {
+            if (currentPage.value < totalPages.value) {
+                handlePagenate(currentPage.value + 1);
+            }
+        };
+
+        /// load product by caategory
+        const getProductByCate = async (name) => {
+            try {
+                const res = await axios.get(`http://localhost:8081/categorys/${name}`);
+                products.value = res.data;
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        /// sort product by desc and asc
+        const sortProductByDesc = () => {
+            products.value.sort((a, b) => b.priceNew - a.priceNew);
+        };
+
+        const sortProductByAsc = () => {
+            products.value.sort((a, b) => a.priceNew - b.priceNew);
+        };
+
+        const handleSelectFilter = (event) => {
+            const selectedValue = event.target.value;
+            switch (selectedValue) {
+                case "1":
+                    sortProductByDesc();
+                    break;
+                case "2":
+                    sortProductByAsc();
+                    break;
+                case "3":
+                    break;
+                case "default":
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        onMounted(() => {
+            paginateProducts(currentPage.value);
+        });
+
+        return {
+            shopStore,
+            detailStore,
+            homestore,
+            handleSelectChange,
+            pageItems,
+            products,
+            totalProducts,
+            currentPage,
+            totalPages,
+            handlePagenate,
+            prevPage,
+            nextPage,
+            getProductByCate,
+            handleSelectFilter,
+        };
     },
 };
 </script>
@@ -610,9 +652,11 @@ export default {
     margin-bottom: 30px;
 }
 .reset-filter-btn {
+    display: inline-block;
     font-size: 1.6rem;
     padding: 9px 26px;
     color: var(--white);
+    border: 1px solid #55585b;
     background-color: var(--common-black);
     transition: all 0.3s ease-out 0s;
 }
