@@ -15,7 +15,7 @@
             <div class="text-center">
                 <p>hoặc đăng ký bằng Email</p>
             </div>
-            <form>
+            <form @submit.prevent="accountStore.signup">
                 <div class="form-group">
                     <label>Nhập tên</label>
                     <input

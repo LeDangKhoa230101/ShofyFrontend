@@ -69,7 +69,7 @@
                                     </button>
                                     <div class="user-body">
                                         <p>Hello, Sign In</p>
-                                        <p>Madam</p>
+                                        <p>{{ name }}</p>
                                     </div>
                                 </button>
                                 <!-- Popup User -->
@@ -78,7 +78,7 @@
                                         <a href="#">Tài khoản của tôi</a>
                                     </li>
                                     <li>
-                                        <a href="#">Đăng xuất</a>
+                                        <a href="#" @click="accountStore.logout">Đăng xuất</a>
                                     </li>
                                 </ul>
                                 <!-- Popup User -->
@@ -218,7 +218,14 @@ export default {
             searchTitle.value = "";
         };
 
-        return { homeStore, accountStore, setActive, resetActive, searchTitle, searchSubmit };
+        /// get name login
+        const name = localStorage.getItem("name");
+        const token = localStorage.getItem("token");
+        if (token !== null) {
+            accountStore.isAuthentication = true;
+        }
+
+        return { homeStore, accountStore, setActive, resetActive, searchTitle, searchSubmit, name };
     },
 };
 </script>

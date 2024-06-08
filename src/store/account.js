@@ -1,4 +1,6 @@
+import axios from "axios";
 import { defineStore } from "pinia";
+import router from "@/router/router";
 
 export const useAccount = defineStore("accounnt", {
     state: () => ({
@@ -75,6 +77,46 @@ export const useAccount = defineStore("accounnt", {
             } else {
                 this.errorPasswordRegister = "";
             }
+        },
+        async signup() {
+            try {
+                const data = {
+                    name: this.nameRegister,
+                    email: this.emailRegister,
+                    password: this.passwordRegister,
+                };
+                if (
+                    this.errorNameRegister === "" &&
+                    this.errorEmailRegister === "" &&
+                    this.errorPasswordRegister === ""
+                ) {
+                    await axios.post("http://localhost:8081/auth/signup", data);
+                    router.push("/dang-nhap");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async signin() {
+            try {
+                const data = {
+                    email: this.emailLogin,
+                    password: this.passwordLogin,
+                };
+                if (this.errorEmailLogin === "" && this.errorPasswordLogin === "") {
+                    const res = await axios.post("http://localhost:8081/auth/signin", data);
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("name", res.data.name);
+                    router.push("/");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        logout() {
+            localStorage.removeItem("name");
+            localStorage.removeItem("token");
+            this.isAuthentication = false;
         },
     },
 });
