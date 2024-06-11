@@ -27,6 +27,9 @@ export const useAccount = defineStore("accounnt", {
         errorPasswordRegister: "",
 
         typePassword: "password",
+
+        errorRegister: "",
+        errorLogin: "",
     }),
     actions: {
         handleErrorEmail() {
@@ -91,10 +94,10 @@ export const useAccount = defineStore("accounnt", {
                     this.errorPasswordRegister === ""
                 ) {
                     await axios.post("http://localhost:8081/auth/signup", data);
-                    router.push("/dang-nhap");
+                    router.replace("/dang-nhap");
                 }
             } catch (error) {
-                console.log(error);
+                this.errorRegister = error.response.data;
             }
         },
         async signin() {
@@ -106,16 +109,18 @@ export const useAccount = defineStore("accounnt", {
                 if (this.errorEmailLogin === "" && this.errorPasswordLogin === "") {
                     const res = await axios.post("http://localhost:8081/auth/signin", data);
                     localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("role", res.data.role);
                     localStorage.setItem("name", res.data.name);
-                    router.push("/");
+                    router.replace("/");
                 }
             } catch (error) {
-                console.log(error);
+                this.errorLogin = error.response.data;
             }
         },
         logout() {
             localStorage.removeItem("name");
             localStorage.removeItem("token");
+            localStorage.removeItem("role");
             this.isAuthentication = false;
         },
     },

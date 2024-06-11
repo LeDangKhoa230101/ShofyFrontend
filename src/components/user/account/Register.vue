@@ -16,6 +16,7 @@
                 <p>hoặc đăng ký bằng Email</p>
             </div>
             <form @submit.prevent="accountStore.signup">
+                <p class="error" style="width: 100%; text-align: center">{{ accountStore.errorRegister }}</p>
                 <div class="form-group">
                     <label>Nhập tên</label>
                     <input

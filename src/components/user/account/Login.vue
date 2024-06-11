@@ -26,6 +26,7 @@
                 <p>hoặc đăng nhập bằng Email</p>
             </div>
             <form @submit.prevent="accountStore.signin">
+                <p class="error" style="width: 100%; text-align: center">{{ accountStore.errorLogin }}</p>
                 <div class="form-group">
                     <label>Nhập Email</label>
                     <input
