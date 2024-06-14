@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" v-if="cartStore.showCart">
+            <div class="row" v-if="cartStore.countCart !== 0">
                 <div class="col-xl-9 col-md-9 col-12" style="padding: 0 12px">
                     <div class="cart-table">
                         <table class="table">
@@ -27,64 +27,41 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-for="cart in cartStore.carts.cartItems" :key="cart.id">
                                     <td class="td-image">
                                         <a href="#" class="img-link">
-                                            <img class="image" src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
+                                            <img class="image" :src="cart.productImageDefault" alt="" />
                                         </a>
                                     </td>
                                     <td class="td-name">
-                                        <a href="#">Headphones Wireless</a>
+                                        <a href="#">{{ cart.productName }}</a>
                                     </td>
                                     <td class="td-price">
-                                        <span>1.228.000đ</span>
+                                        <span
+                                            >{{
+                                                cart.productPriceNew ? cart.productPriceNew.toLocaleString() : "N/A"
+                                            }}đ</span
+                                        >
                                     </td>
                                     <td class="td-quantity">
                                         <div class="body-quanti">
-                                            <span>
+                                            <span
+                                                :class="{ disable: cart.quanty === 1 }"
+                                                @click="cartStore.minusCartItem(cart.id)"
+                                            >
                                                 <font-awesome-icon :icon="['fas', 'minus']" />
                                             </span>
-                                            <input type="text" value="1" />
-                                            <span>
+                                            <input type="text" :value="cart.quanty" disabled />
+                                            <span @click="cartStore.plusCartItem(cart.id)">
                                                 <font-awesome-icon :icon="['fas', 'plus']" />
                                             </span>
                                         </div>
                                     </td>
                                     <td class="td-total-price">
-                                        <span>2.231.000đ</span>
+                                        <span>{{ cart.price ? cart.price.toLocaleString() : "N/A" }}đ</span>
                                     </td>
                                     <td class="td-remove">
-                                        <span> Xóa </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-image">
-                                        <a href="#" class="img-link">
-                                            <img class="image" src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
-                                    </td>
-                                    <td class="td-name">
-                                        <a href="#">Headphones Wireless</a>
-                                    </td>
-                                    <td class="td-price">
-                                        <span>1.228.000đ</span>
-                                    </td>
-                                    <td class="td-quantity">
-                                        <div class="body-quanti">
-                                            <span>
-                                                <font-awesome-icon :icon="['fas', 'minus']" />
-                                            </span>
-                                            <input type="text" value="1" />
-                                            <span>
-                                                <font-awesome-icon :icon="['fas', 'plus']" />
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="td-total-price">
-                                        <span>2.231.000đ</span>
-                                    </td>
-                                    <td class="td-remove">
-                                        <span> Xóa </span>
+                                        <span @click="cartStore.removeCart(cart.id)"> Xóa </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -130,7 +107,14 @@
                                             Bạn có chắc chắn muốn xóa tất cả các mặt hàng trong giỏ hàng của mình không?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn delete-btn">Xóa</button>
+                                            <button
+                                                @click="cartStore.clearCart"
+                                                type="button"
+                                                class="btn delete-btn"
+                                                data-bs-dismiss="modal"
+                                            >
+                                                Xóa
+                                            </button>
                                             <button type="button" class="btn destroy-btn" data-bs-dismiss="modal">
                                                 Hủy
                                             </button>
@@ -145,7 +129,11 @@
                     <div class="cart-checkout">
                         <div class="cart-checkout-heading">
                             <h3>Tổng phụ</h3>
-                            <span>1.800.000đ</span>
+                            <span
+                                >{{
+                                    cartStore.carts.totalPrice ? cartStore.carts.totalPrice.toLocaleString() : "N/A"
+                                }}đ</span
+                            >
                         </div>
                         <div class="shipping">
                             <h3>Đang chuyển hàng</h3>
@@ -170,13 +158,17 @@
                         </div>
                         <div class="footer-total">
                             <label>Tổng cộng</label>
-                            <span>2.736.000đ</span>
+                            <span
+                                >{{
+                                    cartStore.carts.totalPrice ? cartStore.carts.totalPrice.toLocaleString() : "N/A"
+                                }}đ</span
+                            >
                         </div>
                         <router-link to="/thanh-toan" class="link-checkout">Tiến hành thanh toán</router-link>
                     </div>
                 </div>
             </div>
-            <div class="row" v-else>
+            <div class="row" v-if="cartStore.countCart === 0">
                 <div class="col-12">
                     <div class="not-cart">
                         <h3>Giỏ hàng trống</h3>
@@ -194,6 +186,7 @@ export default {
     name: "cart-wrapper",
     setup() {
         const cartStore = useCart();
+
         return { cartStore };
     },
 };
@@ -289,14 +282,20 @@ tr {
             display: inline-block;
             margin-top: 30px;
 
+            .disable {
+                opacity: 0.4;
+                pointer-events: none;
+            }
+
             > input {
                 height: 34px;
                 width: 100px;
                 padding: 0 30px;
-                font-size: 1.4rem;
+                font-size: 1.5rem;
                 border: 1px solid #dadce0;
                 border-radius: 16px;
                 text-align: center;
+                color: var(--common-black);
                 outline: none;
             }
             > span {

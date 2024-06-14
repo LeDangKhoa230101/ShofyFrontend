@@ -7,8 +7,6 @@ export const useDetail = defineStore("detail", {
         showAllDescription: false,
         seeDescriptionText: "Xem thêm",
 
-        showMessageAddCart: false,
-
         imageItemActive: 0,
 
         productDetail: {},
@@ -24,12 +22,6 @@ export const useDetail = defineStore("detail", {
             if (this.descriptionText === true && this.showAllDescription === false) {
                 this.seeDescriptionText = "Xem thêm";
             }
-        },
-        addToCart() {
-            this.showMessageAddCart = true;
-            setTimeout(() => {
-                this.showMessageAddCart = false;
-            }, 1500);
         },
         async handleDetail(id) {
             try {

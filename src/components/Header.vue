@@ -121,7 +121,7 @@
                                             d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
                                         />
                                     </svg>
-                                    <span class="quanty-cart">3</span>
+                                    <span class="quanty-cart">{{ cartStore.countCart }}</span>
                                 </router-link>
                             </li>
                         </ul>
@@ -180,6 +180,7 @@
 <script>
 import { useHome } from "@/store/home";
 import { useAccount } from "@/store/account";
+import { useCart } from "@/store/cart";
 import { ref } from "vue";
 export default {
     name: "header-wrapper",
@@ -197,6 +198,7 @@ export default {
     setup(props) {
         const homeStore = useHome();
         const accountStore = useAccount();
+        const cartStore = useCart();
 
         const setActive = (index) => {
             homeStore.menuActiveHeaderBottom = index;
@@ -225,7 +227,13 @@ export default {
             accountStore.isAuthentication = true;
         }
 
-        return { homeStore, accountStore, setActive, resetActive, searchTitle, searchSubmit, name };
+        /// get count cart
+        cartStore.getCountCart();
+
+        /// get list cart
+        cartStore.getListCart();
+
+        return { homeStore, accountStore, cartStore, setActive, resetActive, searchTitle, searchSubmit, name };
     },
 };
 </script>

@@ -1,15 +1,32 @@
 <template>
-    <router-link
-        :to="{ name: 'productDetail', params: { id: product.id } }"
-        v-if="product"
-        @click="detailStore.handleDetail(product.id)"
-        class="product-item"
-    >
-        <div class="product-image">
-            <img :src="product.imageDefault" alt="" />
-        </div>
+    <div class="product-item-container">
+        <router-link
+            :to="{ name: 'productDetail', params: { id: product.id } }"
+            v-if="product"
+            @click="detailStore.handleDetail(product.id)"
+            class="product-item"
+        >
+            <div class="product-image">
+                <img :src="product.imageDefault" alt="" />
+            </div>
+            <div class="product-body">
+                <span class="category">{{ product.cateName }}</span>
+                <h5>{{ product.name }}</h5>
+                <div class="rate">
+                    <font-awesome-icon :icon="['fas', 'star']" />
+                    <font-awesome-icon :icon="['fas', 'star']" />
+                    <font-awesome-icon :icon="['fas', 'star']" />
+                    <font-awesome-icon :icon="['fas', 'star']" />
+                    <font-awesome-icon :icon="['fas', 'star-half-stroke']" />
+                </div>
+                <div class="price">
+                    <span>{{ product.priceOld.toLocaleString() }}đ</span>
+                    <span>{{ product.priceNew.toLocaleString() }}đ</span>
+                </div>
+            </div>
+        </router-link>
         <div class="product-action">
-            <button v-if="cartStore.btnAddCartProductItem" class="product-action-btn product-cart-btn">
+            <button @click="cartStore.addToCart(product.id)" class="product-action-btn product-cart-btn">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
@@ -23,24 +40,6 @@
                     />
                 </svg>
             </button>
-            <router-link
-                v-if="cartStore.btnShowCartProductItem"
-                to="/gio-hang"
-                class="product-action-btn product-cart-btn"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    fill="currentColor"
-                    class="bi bi-cart3"
-                    viewBox="0 0 16 16"
-                >
-                    <path
-                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l.84 4.479 9.144-.459L13.89 4zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"
-                    />
-                </svg>
-            </router-link>
             <button class="product-action-btn product-wish-btn">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -56,22 +55,7 @@
                 </svg>
             </button>
         </div>
-        <div class="product-body">
-            <span class="category">{{ product.cateName }}</span>
-            <h5>{{ product.name }}</h5>
-            <div class="rate">
-                <font-awesome-icon :icon="['fas', 'star']" />
-                <font-awesome-icon :icon="['fas', 'star']" />
-                <font-awesome-icon :icon="['fas', 'star']" />
-                <font-awesome-icon :icon="['fas', 'star']" />
-                <font-awesome-icon :icon="['fas', 'star-half-stroke']" />
-            </div>
-            <div class="price">
-                <span>{{ product.priceOld.toLocaleString() }}đ</span>
-                <span>{{ product.priceNew.toLocaleString() }}đ</span>
-            </div>
-        </div>
-    </router-link>
+    </div>
 </template>
 
 <script>
@@ -82,7 +66,6 @@ export default {
     props: ["product"],
     setup() {
         const cartStore = useCart();
-
         const detailStore = useDetail();
 
         return { cartStore, detailStore };
@@ -91,6 +74,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.product-item-container {
+    position: relative;
+    transition: all 0.3s ease-out 0s;
+}
 // Product item
 .product-item {
     position: relative;
@@ -121,7 +108,7 @@ export default {
 .product-item:hover .product-image img {
     transform: scale(1.1);
 }
-.product-item:hover .product-action {
+.product-item-container:hover .product-action {
     visibility: visible;
     right: 20px;
     opacity: 1;
@@ -189,7 +176,7 @@ export default {
     box-shadow: 0 1px 3px rgba(1, 15, 28, 0.14);
     transition: all 0.3s ease-out 0s;
     visibility: hidden;
-    opacity: 0;
+    opacity: 1;
 
     .product-action-btn {
         padding: 8px;

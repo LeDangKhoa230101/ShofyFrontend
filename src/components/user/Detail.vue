@@ -143,15 +143,17 @@
                             <h4>Số lượng</h4>
                             <div class="control">
                                 <div class="quantity">
-                                    <span class="quantity-minus">
+                                    <span class="quantity-minus" @click="cartStore.minusItemDetail">
                                         <font-awesome-icon :icon="['fas', 'minus']" />
                                     </span>
-                                    <input type="text" value="1" disabled />
-                                    <span class="quantity-plus">
+                                    <input type="text" :value="cartStore.quantityDetail" disabled />
+                                    <span class="quantity-plus" @click="cartStore.plusItemDetail">
                                         <font-awesome-icon :icon="['fas', 'plus']" />
                                     </span>
                                 </div>
-                                <button class="add-cart" @click="detailStore.addToCart()">Thêm vào giỏ hàng</button>
+                                <button class="add-cart" @click="cartStore.addToCart(detailStore.productDetail.id)">
+                                    Thêm vào giỏ hàng
+                                </button>
                             </div>
                         </div>
                         <ul>
@@ -296,7 +298,7 @@
             </div>
 
             <!-- Message -->
-            <div class="message-add-cart" v-if="detailStore.showMessageAddCart">
+            <div class="message-add-cart" v-if="cartStore.showMessageAddCart">
                 <font-awesome-icon :icon="['far', 'circle-check']" />
                 <span>Thêm giỏ hàng thành công!</span>
             </div>
@@ -321,12 +323,14 @@
 
 <script>
 import { useDetail } from "@/store/detail";
+import { useCart } from "@/store/cart";
 import ProductItem from "@/components/ProductItem.vue";
 export default {
     name: "detail-wrapper",
     components: { ProductItem },
     setup() {
         const detailStore = useDetail();
+        const cartStore = useCart();
 
         const productDetail = localStorage.getItem("productDetail");
         if (productDetail) {
@@ -336,7 +340,7 @@ export default {
         // list product related
         detailStore.getRelated();
 
-        return { detailStore };
+        return { detailStore, cartStore };
     },
 };
 </script>
