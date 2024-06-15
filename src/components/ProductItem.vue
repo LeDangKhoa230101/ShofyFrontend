@@ -40,7 +40,7 @@
                     />
                 </svg>
             </button>
-            <button class="product-action-btn product-wish-btn">
+            <button @click="wishlistStore.addWishlist(product.id)" class="product-action-btn product-wish-btn">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
@@ -61,14 +61,16 @@
 <script>
 import { useCart } from "@/store/cart";
 import { useDetail } from "@/store/detail";
+import { useWishList } from "@/store/wishlist";
 export default {
     name: "product-item",
     props: ["product"],
     setup() {
         const cartStore = useCart();
         const detailStore = useDetail();
+        const wishlistStore = useWishList();
 
-        return { cartStore, detailStore };
+        return { cartStore, detailStore, wishlistStore };
     },
 };
 </script>

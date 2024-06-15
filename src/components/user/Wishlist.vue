@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" v-if="wishlistStore.showWishlist">
+            <div class="row" v-if="wishlistStore.showWishlist !== 0">
                 <div class="col-12">
                     <div class="wishlist-table">
                         <table class="table">
@@ -26,42 +26,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-for="item in wishlistStore.wishlists" :key="item.wishlistId">
                                     <td class="td-image">
                                         <a href="#" class="img-link">
-                                            <img class="image" src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
+                                            <img class="image" :src="item.productImageDefault" alt="" />
                                         </a>
                                     </td>
                                     <td class="td-name">
-                                        <a href="#">Headphones Wireless</a>
+                                        <a href="#">{{ item.productName }}</a>
                                     </td>
                                     <td class="td-price">
-                                        <span>1.228.000đ</span>
+                                        <span>{{ item.productPriceNew.toLocaleString() }}đ</span>
                                     </td>
                                     <td class="td-add-cart">
-                                        <a href="#">Thêm vào giỏ hàng</a>
+                                        <a href="#" @click="addToCartFromWishlist(item.wishlistId, item.productId)"
+                                            >Thêm vào giỏ hàng</a
+                                        >
                                     </td>
                                     <td class="td-remove">
-                                        <span> Xóa </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-image">
-                                        <a href="#" class="img-link">
-                                            <img class="image" src="https://i.ibb.co/WVdTgR8/headphone-1.png" alt="" />
-                                        </a>
-                                    </td>
-                                    <td class="td-name">
-                                        <a href="#">Headphones Wireless</a>
-                                    </td>
-                                    <td class="td-price">
-                                        <span>1.228.000đ</span>
-                                    </td>
-                                    <td class="td-add-cart">
-                                        <a href="#">Thêm vào giỏ hàng</a>
-                                    </td>
-                                    <td class="td-remove">
-                                        <span> Xóa </span>
+                                        <span @click="wishlistStore.removeWishlist(item.wishlistId)"> Xóa </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -76,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" v-else>
+            <div class="row" v-if="wishlistStore.showWishlist === 0">
                 <div class="col-12">
                     <div class="not-cart">
                         <h3>Không tìm thấy mục danh sách mong muốn nào</h3>
@@ -90,11 +73,34 @@
 
 <script>
 import { useWishList } from "@/store/wishlist";
+import { useCart } from "@/store/cart";
+import axios from "axios";
 export default {
     name: "cart-wrapper",
     setup() {
         const wishlistStore = useWishList();
-        return { wishlistStore };
+        const cartStore = useCart();
+
+        // get wishlist
+        wishlistStore.getWishlist();
+
+        /// add cart from wish list
+        const addToCartFromWishlist = async (id, productId) => {
+            try {
+                await axios.post(
+                    `http://localhost:8081/cart/add-to-cart/${productId}?quantity=${cartStore.quantityDetail}&token=${cartStore.token}`
+                );
+                await axios.post(`http://localhost:8081/wishlist/remove-wishlist/${id}?token=${wishlistStore.token}`);
+                await wishlistStore.getWishlist();
+                await wishlistStore.getCountWishlist();
+                await cartStore.getCountCart();
+                await cartStore.getListCart();
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        return { wishlistStore, cartStore, addToCartFromWishlist };
     },
 };
 </script>

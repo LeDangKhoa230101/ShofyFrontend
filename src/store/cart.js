@@ -26,8 +26,7 @@ export const useCart = defineStore("cart", {
         },
         async getCountCart() {
             try {
-                const token = localStorage.getItem("token");
-                const res = await axios.get(`${this.baseUrl}/count?token=${token}`);
+                const res = await axios.get(`${this.baseUrl}/count?token=${this.token}`);
                 this.countCart = res.data;
             } catch (error) {
                 console.log(error);
@@ -35,8 +34,7 @@ export const useCart = defineStore("cart", {
         },
         async getListCart() {
             try {
-                const token = localStorage.getItem("token");
-                const res = await axios.get(`${this.baseUrl}/?token=${token}`);
+                const res = await axios.get(`${this.baseUrl}/?token=${this.token}`);
                 this.carts = res.data;
             } catch (error) {
                 console.log(error);
@@ -44,8 +42,9 @@ export const useCart = defineStore("cart", {
         },
         async addToCart(id) {
             try {
-                const token = localStorage.getItem("token");
-                await axios.post(`${this.baseUrl}/add-to-cart/${id}?quantity=${this.quantityDetail}&token=${token}`);
+                await axios.post(
+                    `${this.baseUrl}/add-to-cart/${id}?quantity=${this.quantityDetail}&token=${this.token}`
+                );
                 this.showMessageAddCart = true;
 
                 await this.getCountCart();
@@ -61,8 +60,7 @@ export const useCart = defineStore("cart", {
         },
         async plusCartItem(id) {
             try {
-                const token = localStorage.getItem("token");
-                await axios.post(`${this.baseUrl}/plus-cart/${id}?token=${token}`);
+                await axios.post(`${this.baseUrl}/plus-cart/${id}?token=${this.token}`);
                 await this.getListCart();
             } catch (error) {
                 console.log(error);
@@ -70,8 +68,7 @@ export const useCart = defineStore("cart", {
         },
         async minusCartItem(id) {
             try {
-                const token = localStorage.getItem("token");
-                await axios.post(`${this.baseUrl}/minus-cart/${id}?token=${token}`);
+                await axios.post(`${this.baseUrl}/minus-cart/${id}?token=${this.token}`);
                 await this.getListCart();
             } catch (error) {
                 console.log(error);
@@ -79,8 +76,7 @@ export const useCart = defineStore("cart", {
         },
         async removeCart(id) {
             try {
-                const token = localStorage.getItem("token");
-                await axios.post(`${this.baseUrl}/remove/${id}?token=${token}`);
+                await axios.post(`${this.baseUrl}/remove/${id}?token=${this.token}`);
                 await this.getCountCart();
                 await this.getListCart();
             } catch (error) {
