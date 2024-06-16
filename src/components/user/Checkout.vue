@@ -13,7 +13,7 @@
                     </div>
                 </div>
             </div>
-            <form>
+            <form @submit.prevent="cartStore.handleCheckout">
                 <div class="row">
                     <div class="col-xl-7 col-md-7 col-12" style="padding: 0 12px">
                         <div class="bill-detail">
@@ -43,7 +43,7 @@
                                             Phone
                                             <span>*</span>
                                         </label>
-                                        <input type="number" />
+                                        <input type="number" v-model="cartStore.phoneCheckout" />
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -52,13 +52,14 @@
                                             Địa chỉ
                                             <span>*</span>
                                         </label>
-                                        <input type="text" />
+                                        <input type="text" v-model="cartStore.addressCheckout" />
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label> Ghi chú đơn hàng (tùy chọn) </label>
                                         <textarea
+                                            v-model="cartStore.noteCheckout"
                                             placeholder="Ghi chú về đơn đặt hàng của bạn, ví dụ: ghi chú đặc biệt để giao hàng."
                                         />
                                     </div>
@@ -74,24 +75,21 @@
                                 <span>Tổng cộng</span>
                             </div>
                             <ul>
-                                <li class="order-group">
+                                <li v-for="item in cartStore.carts.cartItems" :key="item.id" class="order-group">
                                     <div class="product-item">
-                                        Headphones Wireless.
-                                        <span> x 1</span>
+                                        {{ item.productName }}
+                                        <span> x {{ item.quanty }}</span>
                                     </div>
-                                    <label>2.128.000đ</label>
-                                </li>
-                                <li class="order-group">
-                                    <div class="product-item">
-                                        Gaming Headphone
-                                        <span> x 1</span>
-                                    </div>
-                                    <label>1.234.000đ</label>
+                                    <label>{{ item.price.toLocaleString() }}đ</label>
                                 </li>
                             </ul>
                             <div class="order-subtotal order-group">
                                 <span>Tổng phụ</span>
-                                <label>3.239.000đ</label>
+                                <label
+                                    >{{
+                                        cartStore.carts.totalPrice ? cartStore.carts.totalPrice.toLocaleString() : "0"
+                                    }}đ</label
+                                >
                             </div>
                             <div class="order-ship order-group">
                                 <span>Đang chuyển hàng</span>
@@ -113,8 +111,12 @@
                                 </ul>
                             </div>
                             <div class="order-footer">
-                                <span>Total</span>
-                                <span>3.245.000đ</span>
+                                <span>Tổng thanh toán</span>
+                                <span
+                                    >{{
+                                        cartStore.carts.totalPrice ? cartStore.carts.totalPrice.toLocaleString() : "0"
+                                    }}đ</span
+                                >
                             </div>
                             <button type="submit" class="checkout-btn">Đặt hàng</button>
                         </div>
@@ -126,8 +128,17 @@
 </template>
 
 <script>
+import { useCart } from "@/store/cart";
 export default {
     name: "checkout-wrapper",
+    setup() {
+        const cartStore = useCart();
+
+        /// get list cart
+        cartStore.getListCart();
+
+        return { cartStore };
+    },
 };
 </script>
 

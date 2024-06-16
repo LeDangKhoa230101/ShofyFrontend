@@ -1,3 +1,4 @@
+import router from "@/router/router";
 import axios from "axios";
 import { defineStore } from "pinia";
 
@@ -14,6 +15,10 @@ export const useCart = defineStore("cart", {
         carts: [],
 
         token: localStorage.getItem("token"),
+
+        phoneCheckout: "",
+        addressCheckout: "",
+        noteCheckout: "",
     }),
     actions: {
         plusItemDetail() {
@@ -87,6 +92,18 @@ export const useCart = defineStore("cart", {
             try {
                 await axios.post(`${this.baseUrl}/remove-all?token=${this.token}`);
                 await this.getCountCart();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async handleCheckout() {
+            try {
+                await axios.post(
+                    `${this.baseUrl}/checkout?token=${this.token}&phone=${this.phoneCheckout}&address=${this.addressCheckout}&note=${this.noteCheckout}`
+                );
+                await this.getListCart();
+                await this.getCountCart();
+                router.replace("/gio-hang");
             } catch (error) {
                 console.log(error);
             }
